@@ -1,12 +1,11 @@
 import asyncio
 import os
 import subprocess
-import sys
 
 import chess
 import chess.engine
 
-from configs import Engine_Config, Syzygy_Config
+from configs import Engine_Config, Limit_Config, Syzygy_Config
 
 
 class Engine:
@@ -14,11 +13,13 @@ class Engine:
                  transport: asyncio.SubprocessTransport,
                  engine: chess.engine.UciProtocol,
                  ponder: bool,
-                 opponent: chess.engine.Opponent) -> None:
+                 opponent: chess.engine.Opponent,
+                 limit_config: Limit_Config) -> None:
         self.transport = transport
         self.engine = engine
         self.ponder = ponder
         self.opponent = opponent
+        self.limit_config = limit_config
 
     @classmethod
     async def from_config(cls,
@@ -32,19 +33,13 @@ class Engine:
         await cls._configure_engine(engine, engine_config, syzygy_config)
         await engine.send_opponent_information(opponent=opponent)
 
-        return cls(transport, engine, engine_config.ponder, opponent)
+        return cls(transport, engine, engine_config.ponder, opponent, engine_config.limits)
 
     @classmethod
     async def test(cls, engine_config: Engine_Config) -> None:
         stderr = subprocess.DEVNULL if engine_config.silence_stderr else None
 
-        if engine_config.path.endswith('.py'):
-            # Запускаем через python
-            transport, engine = await chess.engine.popen_uci(
-                [sys.executable, engine_config.path], stderr=stderr)
-        else:
-            transport, engine = await chess.engine.popen_uci(engine_config.path, stderr=stderr)
-
+        transport, engine = await chess.engine.popen_uci(engine_config.path, stderr=stderr)
         await cls._configure_engine(engine, engine_config, Syzygy_Config(False, [], 0, False))
         result = await engine.play(chess.Board(), chess.engine.Limit(time=0.1), info=chess.engine.INFO_ALL)
 
@@ -87,11 +82,18 @@ class Engine:
                         increment: float
                         ) -> tuple[chess.Move, chess.engine.InfoDict]:
         if len(board.move_stack) < 2:
-            limit = chess.engine.Limit(time=15.0) if self.opponent.is_engine else chess.engine.Limit(time=5.0)
+            time_limit = 10.0 if self.opponent.is_engine else 5.0
+            if self.limit_config.time:
+                time_limit = min(time_limit, self.limit_config.time)
+
+            limit = chess.engine.Limit(time=time_limit, depth=self.limit_config.depth, nodes=self.limit_config.nodes)
             ponder = False
         else:
             limit = chess.engine.Limit(white_clock=white_time, white_inc=increment,
-                                       black_clock=black_time, black_inc=increment)
+                                       black_clock=black_time, black_inc=increment,
+                                       time=self.limit_config.time,
+                                       depth=self.limit_config.depth,
+                                       nodes=self.limit_config.nodes)
             ponder = self.ponder
 
         result = await self.engine.play(board, limit, info=chess.engine.INFO_ALL, ponder=ponder)

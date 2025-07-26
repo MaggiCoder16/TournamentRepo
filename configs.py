@@ -3,12 +3,20 @@ from typing import Any, Literal
 
 
 @dataclass
+class Limit_Config:
+    time: float | None
+    depth: int | None
+    nodes: int | None
+
+
+@dataclass
 class Engine_Config:
     path: str
     ponder: bool
     silence_stderr: bool
-    move_overhead_multiplier: float | None
+    move_overhead_multiplier: float
     uci_options: dict[str, Any]
+    limits: Limit_Config
 
 
 @dataclass
@@ -62,6 +70,7 @@ class Lichess_Cloud_Config:
     enabled: bool
     priority: int
     only_without_book: bool
+    use_for_variants: bool
     min_eval_depth: int
     min_time: int
     timeout: int
@@ -117,6 +126,7 @@ class Resign_Config:
 @dataclass
 class Challenge_Config:
     concurrency: int
+    max_takebacks: int
     bullet_with_increment_only: bool
     min_increment: int | None
     max_increment: int | None
