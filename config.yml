@@ -207,5 +207,5 @@ blacklist:                                # List of users who are not challenged
 # - Username2
 
 books:                                    # Names of the opening books (to be used above in the opening_books section) and paths to the opening books.
-  DefaultBook: "/engines/DefaultBook.bin"
-  Book: "/engines/Book.bin"
+  DefaultBook: "/path/to/DefaultBook.bin"
+  Book: "/path/to/Book.bin"
