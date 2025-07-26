@@ -76,6 +76,8 @@ opening_books:
       selection: weighted_random          # Move selection is one of "weighted_random", "uniform_random" or "best_move".
 #      max_depth: 6                       # Half move max depth. (Comment this line for max depth)
       names:                              # List of names of books to use if there is no specific book for the time control, white, black or chess960.
+        - book2
+        - book3
         - book
         - DefaultBook
 #   Use the same pattern for 'bullet', 'blitz', 'rapid', 'classical',
@@ -209,3 +211,5 @@ blacklist:                                # List of users who are not challenged
 books:                                    # Names of the opening books (to be used above in the opening_books section) and paths to the opening books.
   DefaultBook: "./engines/DefaultBook.bin"
   book: "./engines/book.bin"
+  book2: "./engines/book2.bin"
+  book3: "./engines/book3.bin"
