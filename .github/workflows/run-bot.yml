@@ -17,24 +17,24 @@ jobs:
       TOKEN: ${{ secrets.TOKEN }}
 
     steps:
-      - name: Клонировать репозиторий
+      - name: Setup Actions
         uses: actions/checkout@v3
 
-      - name: Установить Python
+      - name: Install Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Установить зависимости
+      - name: Install Requirements
         run: |
           pip install -r requirements.txt
 
-      - name: Подставить токен
+      - name: Fetch Token
         run: |
           sed -i "s/^token:.*/token: \"${TOKEN}\"/" config.yml
           
-      - name: Сделать движок исполняемым
+      - name: Make Stockfish executable
         run: chmod +x ./engines/stockfish.exe
 
-      - name: Запустить бота
-        run:  python user_interface.py tournament E2bgRPgS
+      - name: Run Bot
+        run:  python user_interface.py 
