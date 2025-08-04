@@ -1,3 +1,4 @@
+
 import asyncio
 import random
 import struct
@@ -157,13 +158,16 @@ class Lichess_Game:
 
         return Lichess_Move(move_response.move.uci(), self._offer_draw(move_response), self._resign(move_response))
 
-    def update(self, gameState_event: dict[str, Any]) -> None:
+    def update(self, gameState_event: dict[str, Any]) -> bool:
         self.white_time = gameState_event['wtime'] / 1000
         self.black_time = gameState_event['btime'] / 1000
 
         moves = gameState_event['moves'].split()
         if len(moves) > len(self.board.move_stack):
             self.board.push(chess.Move.from_uci(moves[-1]))
+            return True
+
+        return False
 
     async def takeback(self) -> None:
         self.board.pop()
@@ -361,7 +365,10 @@ class Lichess_Game:
         if out_of_book or too_deep or out_of_range or too_many_moves or not has_time:
             return
 
-        if self.config.online_moves.opening_explorer.anti:
+        if self.config.online_moves.opening_explorer.player:
+            color = 'white' if self.board.turn else 'black'
+            username = self.config.online_moves.opening_explorer.player
+        elif self.config.online_moves.opening_explorer.anti:
             color = 'black' if self.board.turn else 'white'
             username = self.game_info.black_name if self.board.turn else self.game_info.white_name
         else:
@@ -495,7 +502,8 @@ class Lichess_Game:
             self._reduce_own_time(time.perf_counter() - start_time)
             return
 
-        asyncio.create_task(self.api.queue_chessdb(fen))
+        if response['status'] != 'rate limit exceeded':
+            asyncio.create_task(self.api.queue_chessdb(fen))
 
         if response['status'] != 'ok':
             self.out_of_chessdb_counter += 1
