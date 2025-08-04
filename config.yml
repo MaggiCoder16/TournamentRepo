@@ -3,14 +3,14 @@ token:         # Lichess OAuth2 Token.
 engines:
   standard:                               # Engine used for standard chess and when no suitable special engine is configured.
     dir: "./engines/"                      # Directory containing the engine.
-    name: "stockfish.exe"                     # Binary name of the engine to use.
+    name: "stockfish"                     # Binary name of the engine to use.
     ponder: true                          # Think on opponent's time.
     silence_stderr: false                 # Suppresses stderr output.
     move_overhead_multiplier: 1.0         # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
     uci_options:                          # Arbitrary UCI options passed to the engine.
-      Threads: 4                          # Max CPU threads the engine can use.
-      Hash: 256                           # Max memory (in megabytes) the engine can allocate.
-      Move Overhead: 100                  # Increase if your bot flags games too often.
+      Threads: 7                          # Max CPU threads the engine can use.
+      Hash: 4096                           # Max memory (in megabytes) the engine can allocate.
+      Move Overhead: 250                  # Increase if your bot flags games too often.
     limits:                               # Limits that end the move calculation early.
       time: 5.0                           # Max time per move in seconds.
       depth: 26                           # Max depth per move.
@@ -35,7 +35,7 @@ engines:
 
 syzygy:
   standard:
-    enabled: false                        # Activate local syzygy endgame tablebases.
+    enabled: true                        # Activate local syzygy endgame tablebases.
     paths:                                # Paths to local syzygy endgame tablebases.
       - "/path/to/standard/syzygy"
     max_pieces: 7                         # Count of max pieces in the local syzygy endgame tablebases.
@@ -193,10 +193,10 @@ messages:
   #   {cpu} to insert CPU information
   #   {ram} to insert RAM size
   # Any other words in curly braces will be removed.
-  greeting: "I once checkmated myself just to see how it feels. Good Luck!"                                                              # Message sent to the opponent at the beginning o[...]
-  goodbye: "My NNUE saw the future and said, 'nah, too cringe'."                                             # Message sent to the opponent after the end of a game.
-  greeting_spectators: "Welcome to another episode of 'How to Sac Like a Psycho'!"                            # Message sent to the spectators at the beginning of a game.
-  goodbye_spectators: "This game was rated E for Emotional Damage. I hope you took notes - on what *not* to do."
+  greeting: "Hi! I'm {me} running {engine}. Good Luck!"                                                              # Message sent to the opponent at the beginning o[...]
+  goodbye: "Good Game!"                                             # Message sent to the opponent after the end of a game.
+  greeting_spectators: "Hi! I'm {me} running {engine}. I hope you enjoy the game!"                            # Message sent to the spectators at the beginning of a game.
+  goodbye_spectators: "Good Bye!"
 
 whitelist:                                # List of users whose challenges are always accepted.
 # - Username1
