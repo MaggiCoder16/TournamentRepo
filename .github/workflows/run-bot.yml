@@ -1,4 +1,4 @@
-name: Запуск бота
+name: Run Bot
 
 on:
   workflow_dispatch:
