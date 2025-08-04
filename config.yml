@@ -93,13 +93,14 @@ opening_books:
       selection: weighted_random          # Move selection is one of "weighted_random", "uniform_random" or "best_move".
 #      max_depth: 6                       # Half move max depth. (Comment this line for max depth)
       names:                              # List of names of books to use if there is no specific book for the time control, white, black or chess960.
-        - white
+        - DefaultBook
+        - BackupBook
 
     standard_black:
       selection: weighted_random          # Move selection is one of "weighted_random", "uniform_random" or "best_move".
 #      max_depth: 6                       # Half move max depth. (Comment this line for max depth)
       names:                              # List of names of books to use if there is no specific book for the time control, white, black or chess960.
-        - black
+        - BlackBook
 #   'antichess', 'atomic', 'chess960', 'crazyhouse', 'horde', 'kingofthehill', 'racingkings' and '3check' as well.
 #   Append '_white', '_black' or '_human' to use the engine only as the specific color or against humans.
 
@@ -228,5 +229,6 @@ blacklist:                                # List of users who are not challenged
 # - Username2
 
 books:                                    # Names of the opening books (to be used above in the opening_books section) and paths to the opening books.
-  white: "./engines/special.bin"
-  black: "./engines/blackbook (1).bin"
+  DefaultBook: "./engines/Book2.bin"
+  BackupBook: "./engines/Book3.bin"
+  BlackBook: "./engines/black.bin"
