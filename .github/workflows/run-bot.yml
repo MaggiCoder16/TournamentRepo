@@ -3,7 +3,7 @@ name: Run Bot
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */5 * * *'  # каждые 5 часов
+    - cron: '0 */5 * * *'  
 
 jobs:
   run-bot:
@@ -41,4 +41,4 @@ jobs:
           chmod +x engines/stockfish
 
       - name: Run Bot
-        run:  python user_interface.py 
+        run:  python user_interface.py --matchmaking
